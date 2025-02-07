@@ -1,0 +1,31 @@
+{
+  "name": "Coordinadora Package Manament",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node api/index.ts"
+  },
+  "author": "Kevin Molinares",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@sentry/node": "^8.54.0",
+    "@sentry/profiling-node": "^8.54.0",
+    "axios": "1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "4.21.2",
+    "morgan": "^1.10.0",
+    "mysql": "2.18.1",
+    "redis": "4.7.0",
+    "response-time": "2.3.3",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/morgan": "^1.9.9"
+  }
+}
