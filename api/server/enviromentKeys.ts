@@ -4,6 +4,6 @@ export const enviromentKeys: any = {
     DATABASEURL: "Mysql URL ",
     DATABASEUSER:"Database User",
     DATABASEPASSWORD:"Database Password",
-    DATABASETABLE:"Database Table",
+    DATABASENAME:"Database Name",
     JWTKEYSECRET: "JWT Secret",
 }
