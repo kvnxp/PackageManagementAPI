@@ -1,8 +1,8 @@
 import "dotenv/config"
 import { envInit } from "./server/envInit";
-import { expressInit } from "./server/express";
+import { expressInit } from "./server/expressIndex";
 import { sentryStarup } from "./server/sentryReport";
-import { MysqlManager } from "./server/database";
+import { MysqlManager } from "./server/mysqlManager";
 
 export async function startServer() {
     envInit();

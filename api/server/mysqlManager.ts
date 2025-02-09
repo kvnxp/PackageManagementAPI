@@ -1,9 +1,9 @@
 import * as mysql from 'mysql2';
 import { enviromentKeys } from './enviromentKeys';
 import * as fs from "node:fs";
+import { printError } from './sentryReport';
 
-const queryshow = "SHOW DATABASES";
-
+export let SQL: mysql.PoolConnection;
 export class MysqlManager {
 
     static sqlPoolConnection: mysql.PoolConnection;
@@ -23,11 +23,11 @@ export class MysqlManager {
                 this.sqlPoolConnection = connection;
 
                 if (err) {
-                    this.errorValidation(err);
+                    printError(err);
                     reject(err);
                 }
 
-                const res: any = await connection.promise().query(queryshow)
+                const res: any = await connection.promise().query("SHOW DATABASES")
                 const found = res[0].find((element: any) => {
                     return element.Database === enviromentKeys.DATABASENAME;
                 })
@@ -37,33 +37,13 @@ export class MysqlManager {
                     await this.databaseInitialization();
                 }
 
-                resolve(connection);
+                await connection.promise().query("USE " + enviromentKeys.DATABASENAME);
                 console.log('Connected to database');
+                SQL = this.sqlPoolConnection;
+                resolve(connection);
             })
         })
         return connectionStatus;
-    }
-
-    static async errorValidation(err: NodeJS.ErrnoException) {
-
-        if (err.errno) {
-            switch (err.errno) {
-                case 1044:
-                    console.log('Invalid database');
-                    break;
-                case 1045:
-                    console.log('Invalid user or password');
-                    break;
-                case 1049:
-                    console.log('Database does not exist');
-                    break;
-                default:
-                    console.log('Error connecting to database');
-                    break;
-            }
-        } else {
-            console.log('Error connecting to database', err);
-        }
     }
 
     static async createTable(query: string) {
@@ -88,6 +68,7 @@ export class MysqlManager {
             const sql = fs.readFileSync(projectDir + "/sqlTemplate.sql", "utf-8");
 
             const sqlCommands = sql.split(';').map(cmd => cmd.trim()).filter(cmd => cmd.length > 0);
+
             for (const cmd of sqlCommands) {
                 await this.sqlPoolConnection.promise().query(cmd);
             }

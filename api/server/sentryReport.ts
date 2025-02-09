@@ -12,8 +12,9 @@ export function sentryStarup() {
 
 export function printError(err: Error) {
     SENTRYAPP.captureException(err);
-    console.log(err.message);
-    console.log(err.stack);
+    // console.log(err.message);
+    // console.log(err.stack);
+    throw err;
 }
 
 export function printLog(message: string) {
