@@ -1,9 +1,9 @@
 import { genderEnum } from "../enums/genderEnum";
 import { Roles } from "../enums/roleEnum";
-import { UserInterface } from "../interfaces/userInterface";
-import { ErrorR } from "./errorStruct";
+import { MessageList } from "../tools/messageList";
+import { responseStruct } from "./responseStruct";
 
-export class User implements UserInterface {
+export class User {
     id: string;
     idCard: number;
     firstName: string;
@@ -20,21 +20,21 @@ export class User implements UserInterface {
     createdAt: Date;
     updatedAt: Date;
     role: Roles | undefined;
-    password: string;
+    password?: string;
 
-    constructor(data?: UserInterface) {
+    constructor(data?: User) {
 
         if (data?.dateBirth) {
             const regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])(?: (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])?)?$/
             if (typeof data.dateBirth === 'string' && !regex.test(data.dateBirth)) {
-                throw new ErrorR('Invalid date format', 400);
+                throw new responseStruct("error", MessageList.AUTH_INVALID_DATE, 400);
             }
         }
 
         if (data?.email) {
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(data.email)) {
-                throw new ErrorR('Invalid email format', 400);
+                throw new responseStruct("error", MessageList.AUTH_INVALID_EMAIL, 400);
             }
         }
 
@@ -43,7 +43,7 @@ export class User implements UserInterface {
         this.id = typeof data?.id === 'string' ? data.id : crypto.randomUUID();
         this.idCard = data?.idCard ?? 0;
         this.email = data?.email.trim() ?? '';
-        this.password = data?.password.trim() ?? '';
+        this.password = data?.password ? data.password.trim() : undefined;
         this.firstName = data?.firstName ?? '';
         this.lastName = data?.lastName ?? '';
         this.gender = data?.gender ?? undefined;
@@ -59,13 +59,13 @@ export class User implements UserInterface {
         this.role = data?.role ?? undefined;
     }
 
-    public static toInsert(data: UserInterface) {
+    public static toInsert(data: User) {
 
         var keyes: string = "";
         var values: any[] = [];
         var comodin: string = "";
         for (const key in data) {
-            const keyName = key as keyof UserInterface;
+            const keyName = key as keyof User;
             if (data[keyName] !== undefined) {
                 keyes += key + ','
                 values.push(data[keyName]);
