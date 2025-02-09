@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import welcomeRouter from "../routes/welcomeRoute";
+import authRouter from "../routes/authRoutes";
+import { responseStruct } from "../struct/responseStruct";
 import userRouter from "../routes/userRoutes";
-import { ErrorR } from "../struct/errorStruct";
-
 
 export function expressInit() {
 
@@ -14,23 +14,27 @@ export function expressInit() {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    //Use for future  Auth Validation for endpoints 
-    app.use("/", (req, res, next) => {
-        next();
-    })
-
-    const routes: any = [welcomeRouter, userRouter];
+    const routes: any = [welcomeRouter, authRouter,userRouter];
     app.use("/", routes);
 
-
-    app.use((err: ErrorR, req: Request, res: Response, next: NextFunction) => {
+    app.use((err: responseStruct, req: Request, res: Response, next: NextFunction) => {
         console.log(err);
 
         const ecode = err.ecode ?? 500;
         let errorRet;
 
+        if (err.status == "ok") {
+            errorRet = {
+                status: err.status,
+                message: err.message,
+                data: err.data
+            }
+            res.status(200).send(errorRet);
+            return;
+        }
+
         if (err.hasOwnProperty("errno")) {
-            const message = err.message.split(";")[0];
+            const message = err.message.toString().split(";")[0];
             errorRet = {
                 error: {
                     code: ecode,
@@ -46,10 +50,8 @@ export function expressInit() {
             }
         }
 
-
         res.status(ecode).send(errorRet);
     });
-
 
     app.listen(port, () => {
         console.log(`Server is running on port http://localhost:${port}`)
