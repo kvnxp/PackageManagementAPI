@@ -13,7 +13,11 @@ export class MessageList {
     public static readonly AUTH_INVALID_EMAIL = "Invalid email format";
     public static readonly AUTH_INVALID_DATE = "Invalid date format";
     public static readonly AUTH_INVALID_PASSWORD = "The password is incorrect";
-    public static readonly AUTH_INVALID_CREDENTIALS = "Invalid credentials";
     public static readonly AUTH_SUCCESS = "Authentication successful";
+    public static readonly AUTH_INVALID_TOKEN = "Invalid token";
+    public static readonly AUTH_TOKEN_NOT_FOUND = "Token not found";
+    public static readonly UNAUTHORIZED = "Unauthorized";
+    public static readonly FORBIDDEN = "Forbidden";
+
 
 }

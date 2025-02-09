@@ -4,7 +4,8 @@ import welcomeRouter from "../routes/welcomeRoute";
 import authRouter from "../routes/authRoutes";
 import { responseStruct } from "../struct/responseStruct";
 import userRouter from "../routes/userRoutes";
-
+import { SecurityManager } from "../security/securityManager";
+import cors from "cors"
 export function expressInit() {
 
     const port = process.env.PORT ?? 3000;
@@ -14,9 +15,16 @@ export function expressInit() {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    const routes: any = [welcomeRouter, authRouter,userRouter];
+    app.use(cors());
+
+    //Validate user token
+    app.use(SecurityManager.validateUser);
+
+    //load routes
+    const routes: any = [welcomeRouter, authRouter, userRouter];
     app.use("/", routes);
 
+    // Error handler
     app.use((err: responseStruct, req: Request, res: Response, next: NextFunction) => {
         console.log(err);
 

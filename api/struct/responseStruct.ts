@@ -27,3 +27,5 @@ export class responseStruct {
     }
 
 }
+
+export const errorStruct = responseStruct
