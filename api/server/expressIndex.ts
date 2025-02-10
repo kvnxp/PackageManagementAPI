@@ -6,6 +6,7 @@ import { responseStruct } from "../struct/responseStruct";
 import userRouter from "../routes/userRoutes";
 import { SecurityManager } from "../security/securityManager";
 import cors from "cors"
+import driverRouter from "../routes/driverRoutes";
 export function expressInit() {
 
     const port = process.env.PORT ?? 3000;
@@ -21,14 +22,14 @@ export function expressInit() {
     app.use(SecurityManager.validateUser);
 
     //load routes
-    const routes: any = [welcomeRouter, authRouter, userRouter];
+    const routes: any = [welcomeRouter, authRouter, userRouter, driverRouter];
     app.use("/", routes);
 
     // Error handler
     app.use((err: responseStruct, req: Request, res: Response, next: NextFunction) => {
         console.log(err);
 
-        const ecode = err.ecode ?? 500;
+        const ecode = err.codeno ?? 500;
         let errorRet;
 
         if (err.status == "ok") {

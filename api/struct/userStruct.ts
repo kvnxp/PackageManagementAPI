@@ -1,7 +1,6 @@
 import { genderEnum } from "../enums/genderEnum";
 import { Roles } from "../enums/roleEnum";
-import { MessageList } from "../tools/messageList";
-import { responseStruct } from "./responseStruct";
+import { Tools } from "../misc/Tools";
 
 export class User {
     id: string;
@@ -13,32 +12,36 @@ export class User {
     state: string;
     city: string;
     address: string;
-    postalCode: number;
+    postalCode?: number | undefined;
     email: string;
     phone: number;
     dateBirth: string | Date | undefined;
+    hireName?: string;
+    licenceNumber?: number;
+    licenceExpirationAt?: Date;
     createdAt: Date;
     updatedAt: Date;
     role: Roles | undefined;
     password?: string;
+    notes?: string;
 
     constructor(data?: User) {
 
-        if (data?.dateBirth) {
-            const regex = /\b(\d{4}-\d{2}-\d{2})(T(\d{2}:\d{2}:\d{2})Z)?\b/
+        Tools.validateIfIsAnumber(data?.idCard, "idCard");
+        Tools.validateDate(data?.dateBirth as string);
+        Tools.validateEmail(data?.email as string);
+        Tools.validatePhonenumber(data?.phone as number);
 
-            if (typeof data.dateBirth === 'string' && !regex.test(data.dateBirth)) {
-                throw new responseStruct("error", MessageList.AUTH_INVALID_DATE, 400);
+        if (data?.licenceNumber != undefined || data?.licenceNumber != "") {
+
+            if (data?.licenceExpirationAt == undefined || data?.licenceExpirationAt as unknown as string | Date == "") {
+                throw new Error("licenceExpirationAt is required");
             }
-        }
 
-        if (data?.email) {
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (!emailRegex.test(data.email)) {
-                throw new responseStruct("error", MessageList.AUTH_INVALID_EMAIL, 400);
-            }
-        }
+            Tools.validateIfIsAnumber(data?.licenceNumber, "licenceNumber");
+            Tools.validateDate(data?.licenceExpirationAt as unknown as string);
 
+        }
 
         const birthDate = data?.dateBirth ? new Date(data.dateBirth) : undefined;
 
@@ -59,26 +62,10 @@ export class User {
         this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date();
         this.updatedAt = data?.updatedAt ? new Date(data.updatedAt) : new Date();
         this.role = data?.role ?? undefined;
-    }
-
-    public static toInsert(data: User) {
-
-        var keyes: string = "";
-        var values: any[] = [];
-        var comodin: string = "";
-        for (const key in data) {
-            const keyName = key as keyof User;
-            if (data[keyName] !== undefined) {
-                keyes += key + ','
-                values.push(data[keyName]);
-                comodin += '?,'
-            }
-        }
-
-        keyes = keyes.slice(0, -1);
-        comodin = comodin.slice(0, -1);
-
-        return { keyes, values, comodin };
+        this.hireName = data?.hireName ?? undefined;
+        this.licenceNumber = data?.licenceNumber ?? undefined;
+        this.licenceExpirationAt = data?.licenceExpirationAt ? new Date(data.licenceExpirationAt) : undefined;
+        this.notes = data?.notes ?? "";
 
     }
 }

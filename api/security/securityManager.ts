@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { errorStruct } from "../struct/responseStruct";
-import { MessageList } from "../tools/messageList";
+import { ErrorMessage } from "../struct/responseStruct";
+import { MessageList } from "../misc/messageList";
 import { JWTManager } from "../jwt/jwtManager";
 import { Roles } from "../enums/roleEnum";
 
@@ -20,7 +20,7 @@ export class SecurityManager {
         }
 
         if (!tokenHeader) {
-            next(new errorStruct("error", MessageList.AUTH_TOKEN_NOT_FOUND, 404));
+            next(new ErrorMessage("error", MessageList.AUTH_TOKEN_NOT_FOUND, 404));
             return;
         }
         try {
@@ -45,18 +45,22 @@ export class SecurityManager {
             const token = req.body["token"];
 
             if (token && token != req.headers["authorization"]) {
-                next(new errorStruct("error", MessageList.UNAUTHORIZED, 401));
+                next(new ErrorMessage("error", MessageList.UNAUTHORIZED, 401));
                 return;
             }
 
-            allowedRoles.forEach(role => {
+            const found = allowedRoles.find(role => {
                 if (user.role === role) {
-                    next();
-                    return;
+                    return true;
                 }
             })
 
-            next(new errorStruct("error", MessageList.UNAUTHORIZED, 401));
+            if (found) {
+                next();
+                return;
+            }
+
+            next(new ErrorMessage("error", MessageList.UNAUTHORIZED, 401));
 
         }
     }
