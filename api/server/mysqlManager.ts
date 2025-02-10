@@ -23,8 +23,7 @@ export class MysqlManager {
                 this.sqlPoolConnection = connection;
 
                 if (err) {
-                    printError(err);
-                    reject(err);
+                    throw err;
                 }
 
                 const res: any = await connection.promise().query("SHOW DATABASES")

@@ -6,7 +6,7 @@ const userRouter = Router();
 const path = "/user/"
 
 userRouter.get(path + "list", SecurityManager.validateRole([Roles.admin]), UserController.getUserList);
-userRouter.get(path + "get/:id", UserController.getUser);
+userRouter.get(path + "get/:id", SecurityManager.validateRole([Roles.admin, Roles.driver ]), UserController.getUser);
 
 
 export default userRouter;
