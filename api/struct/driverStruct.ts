@@ -1,46 +1,26 @@
 import { Tools } from "../misc/Tools";
+import { User } from "./userStruct";
 
-export class Driver {
-    id: any;
-    firstName: any;
-    lastName: any;
-    idCard: any;
-    gender: any;
-    dateBirth: any;
-    homeAddress: any;
-    email: any;
-    phone: any;
-    hireName: any;
-    licenceNumber: any;
-    licenceExpirationAt: any;
-    notes: any;
-    dateCreatedAt: any;
-    dateUpdateAt: any;
-    createdBy: any;
-    updateBy: any;
+export class Driver extends User {
+    hireName?: string;
+    licenceNumber?: number;
+    licenceExpirationAt?: Date;
 
     constructor(data?: Driver) {
+        super();
+        if (data?.licenceNumber != undefined || data?.licenceNumber != "") {
 
-        Tools.validateDate(data?.dateBirth);
-        Tools.validateEmail(data?.email);
-        Tools.validateIfIsAnumber(data?.idCard);
+            if (data?.licenceExpirationAt == undefined || data?.licenceExpirationAt as unknown as string | Date == "") {
+                throw new Error("licenceExpirationAt is required");
+            }
 
-        this.id = data?.id;
-        this.firstName = data?.firstName;
-        this.lastName = data?.lastName;
-        this.idCard = data?.idCard;
-        this.gender = data?.gender;
-        this.dateBirth = data?.dateBirth;
-        this.homeAddress = data?.homeAddress;
-        this.email = data?.email;
-        this.phone = data?.phone;
-        this.hireName = data?.hireName;
-        this.licenceNumber = data?.licenceNumber;
-        this.licenceExpirationAt = data?.licenceExpirationAt;
-        this.notes = data?.notes;
-        this.dateCreatedAt = data?.dateCreatedAt;
-        this.dateUpdateAt = data?.dateUpdateAt;
-        this.createdBy = data?.createdBy;
-        this.updateBy = data?.updateBy;
+            Tools.validateIfIsAnumber(data?.licenceNumber, "licenceNumber");
+            Tools.validateDate(data?.licenceExpirationAt as unknown as string);
+
+            this.hireName = data?.hireName ?? undefined;
+            this.licenceNumber = data?.licenceNumber ?? undefined;
+            this.licenceExpirationAt = data?.licenceExpirationAt ? new Date(data.licenceExpirationAt) : undefined;
+            
+        }
     }
 }

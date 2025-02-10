@@ -16,9 +16,7 @@ export class User {
     email: string;
     phone: number;
     dateBirth: string | Date | undefined;
-    hireName?: string;
-    licenceNumber?: number;
-    licenceExpirationAt?: Date;
+   
     createdAt: Date;
     updatedAt: Date;
     role: Roles | undefined;
@@ -31,17 +29,6 @@ export class User {
         Tools.validateDate(data?.dateBirth as string);
         Tools.validateEmail(data?.email as string);
         Tools.validatePhonenumber(data?.phone as number);
-
-        if (data?.licenceNumber != undefined || data?.licenceNumber != "") {
-
-            if (data?.licenceExpirationAt == undefined || data?.licenceExpirationAt as unknown as string | Date == "") {
-                throw new Error("licenceExpirationAt is required");
-            }
-
-            Tools.validateIfIsAnumber(data?.licenceNumber, "licenceNumber");
-            Tools.validateDate(data?.licenceExpirationAt as unknown as string);
-
-        }
 
         const birthDate = data?.dateBirth ? new Date(data.dateBirth) : undefined;
 
@@ -62,9 +49,6 @@ export class User {
         this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date();
         this.updatedAt = data?.updatedAt ? new Date(data.updatedAt) : new Date();
         this.role = data?.role ?? undefined;
-        this.hireName = data?.hireName ?? undefined;
-        this.licenceNumber = data?.licenceNumber ?? undefined;
-        this.licenceExpirationAt = data?.licenceExpirationAt ? new Date(data.licenceExpirationAt) : undefined;
         this.notes = data?.notes ?? "";
 
     }

@@ -7,11 +7,12 @@ import { converToSQLInsert } from "../misc/createSQLInsert";
 import { User } from "../struct/userStruct";
 import { Roles } from "../enums/roleEnum";
 import { UserQueryList } from "../sql/userQuery";
+import { Driver } from "../struct/driverStruct";
 
 export class DriverController {
     public static async createDriver(req: Request, res: Response, next: any) {
 
-        const body: User = req.body;
+        const body: Driver = req.body;
 
         try {
 
@@ -25,7 +26,7 @@ export class DriverController {
         }
 
         try {
-            const driverData: User = new User(body);
+            const driverData: Driver = new User(body);
             driverData.role = Roles.driver
             driverData.password = "changeAtLogin";
 
@@ -54,6 +55,8 @@ export class DriverController {
             if (param.id) {
                 query += ` AND id = ${param.id}`;
             }
+
+            query += ` ORDER BY createdAt DESC`;
 
             const resp: any = await SQL.promise().query(query!, Roles.driver);
             SQL.release();
