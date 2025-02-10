@@ -3,13 +3,11 @@ import { MessageList } from "../tools/messageList";
 /**
  * Class representing a response structure.
  */
-export class responseStruct {
+export class responseStruct extends Error {
     status: "ok" | "error";
-    message: MessageList | string;
     ecode?: number;
     data?: any;
     token?: string;
-
 
     /**
      * Constructs a new instance of the response structure.
@@ -20,8 +18,9 @@ export class responseStruct {
      * @param data - (Optional) Additional data associated with the response.
      */
     constructor(status: "ok" | "error", message: MessageList | string, ecode?: number, data?: any) {
+        super();
         this.status = status;
-        this.message = message;
+        this.message = message.toString();
         this.ecode = ecode;
         this.data = data;
     }
