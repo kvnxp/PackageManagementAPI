@@ -3,6 +3,7 @@ export class MessageList {
     public static readonly USER_EXISTS = "User exists";
     public static readonly USER_CREATED = "User created";
     public static readonly USER_UPDATED = "User updated";
+    public static readonly USER_INVALID_ADDRESS = "Invalid address";
 
     public static readonly DRIVER_CREATED = "Driver created";
     public static readonly DRIVER_UPDATED = "Driver updated";

@@ -25,7 +25,8 @@ export class User {
     constructor(data?: User) {
 
         if (data?.dateBirth) {
-            const regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])(?: (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])?)?$/
+            const regex = /\b(\d{4}-\d{2}-\d{2})(T(\d{2}:\d{2}:\d{2})Z)?\b/
+
             if (typeof data.dateBirth === 'string' && !regex.test(data.dateBirth)) {
                 throw new responseStruct("error", MessageList.AUTH_INVALID_DATE, 400);
             }
@@ -37,6 +38,7 @@ export class User {
                 throw new responseStruct("error", MessageList.AUTH_INVALID_EMAIL, 400);
             }
         }
+
 
         const birthDate = data?.dateBirth ? new Date(data.dateBirth) : undefined;
 
