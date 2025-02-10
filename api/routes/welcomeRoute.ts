@@ -1,8 +1,7 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import welcome from "../controllers/welcomeController";
 
 const welcomeRouter = Router();
-welcomeRouter.get("/", (req: Request, res: Response) => {
-    res.send("Welcome to the API");
-});
+welcomeRouter.get("/", welcome)
 
 export default welcomeRouter;

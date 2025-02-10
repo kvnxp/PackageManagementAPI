@@ -1,5 +1,5 @@
 {
-  "name": "Coordinadora Package Manament",
+  "name": "Package Manament API SaaS",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -12,10 +12,13 @@
     "@sentry/node": "^8.54.0",
     "@sentry/profiling-node": "^8.54.0",
     "axios": "1.7.9",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "4.21.2",
+    "jose": "^5.9.6",
     "morgan": "^1.10.0",
-    "mysql": "2.18.1",
+    "mysql2": "^3.12.0",
     "redis": "4.7.0",
     "response-time": "2.3.3",
     "ts-node": "10.9.2",
@@ -25,6 +28,8 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9"
   }
