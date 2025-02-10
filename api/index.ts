@@ -1,16 +1,18 @@
 import "dotenv/config"
 import { envInit } from "./server/envInit";
-import { expressInit } from "./server/express";
-import * as Sentry from "@sentry/node"
+import { expressInit } from "./server/expressIndex";
+import { sentryStarup } from "./server/sentryReport";
+import { MysqlManager } from "./server/mysqlManager";
 
-export const sentry = Sentry.init({
-  dsn: process.env.SENTRYDSN,
-  tracesSampleRate: 1.0,
-})
+export async function startServer() {
+    envInit();
+    sentryStarup();
 
-envInit();
-const app = expressInit();
-Sentry.setupExpressErrorHandler(app);
+    await MysqlManager.initPoolConnection();
+    const app = expressInit();
+    return await app;
+}
+
 
 // this output for Vercel serverless function
-export default app;
+export default startServer();
