@@ -8,7 +8,16 @@ export class SecurityManager {
 
     public static async validateUser(req: Request, res: Response, next: NextFunction) {
         console.log("validateUser");
-        const tokenHeader = req.headers["authorization"];
+        const tokenHeader: string = req.headers["authorization"] as string;
+
+        if (!tokenHeader) {
+            req.body["user"] = {
+                role: Roles.guest
+            }
+            req.body.token = undefined;
+            next();
+            return;
+        }
 
         if (!tokenHeader) {
             next(new errorStruct("error", MessageList.AUTH_TOKEN_NOT_FOUND, 404));
@@ -17,30 +26,37 @@ export class SecurityManager {
         try {
             const { payload } = await SecurityManager.validateToken(tokenHeader);
             req.body["user"] = payload;
+            req.body.token = tokenHeader;
             next();
         } catch (error) {
             next(error);
         }
-        // next();
     }
 
     static async validateToken(token: string) {
 
-        const verified  = await JWTManager.verifyToken(token);
+        const verified = await JWTManager.verifyToken(token);
         return verified
     }
 
     public static validateRole(allowedRoles: Roles[]) {
         return (req: Request, res: Response, next: NextFunction) => {
             const user = req.body["user"];
+            const token = req.body["token"];
+
+            if (token && token != req.headers["authorization"]) {
+                next(new errorStruct("error", MessageList.UNAUTHORIZED, 401));
+                return;
+            }
+
             allowedRoles.forEach(role => {
                 if (user.role === role) {
                     next();
                     return;
                 }
             })
-                
-            next(new errorStruct("error", MessageList.UNAUTHORIZED, 401));  
+
+            next(new errorStruct("error", MessageList.UNAUTHORIZED, 401));
 
         }
     }
