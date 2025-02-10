@@ -1,31 +1,5 @@
 
 --
--- Estructura de tabla para la tabla `drivers`
---
-
-CREATE TABLE `drivers` (
-  `id` varchar(36) NOT NULL COMMENT 'Unique identifier for the driver (UUID)',
-  `firstName` varchar(30) NOT NULL COMMENT 'Drivers first name',
-  `lastName` varchar(30) NOT NULL COMMENT 'Drivers last name',
-  `idCard` int(20) NOT NULL COMMENT 'Identification card number',
-  `gender` int(2) NOT NULL COMMENT 'Drivers gender (1: Male, 2: Female, etc.)',
-  `dateBirth` date DEFAULT NULL COMMENT 'Drivers date of birth',
-  `homeAddress` varchar(100) DEFAULT NULL COMMENT 'Drivers home address',
-  `email` varchar(100) NOT NULL COMMENT 'Drivers email address',
-  `phone` int(55) NOT NULL COMMENT 'Drivers phone number',
-  `hireName` varchar(100) DEFAULT NULL COMMENT 'Name of the person who hired the driver',
-  `licenceNumber` varchar(50) DEFAULT NULL COMMENT 'Drivers license number',
-  `licenceExpirationAt` date DEFAULT NULL COMMENT 'Expiration date of the drivers license',
-  `notes` text DEFAULT NULL COMMENT 'Additional notes about the driver',
-  `dateCreatedAt` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Timestamp when the driver record was created',
-  `dateUpdateAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Timestamp when the driver record was last updated',
-  `createdBy` varchar(100) DEFAULT NULL COMMENT 'User  who created the record',
-  `updatedBy` varchar(100) DEFAULT NULL COMMENT 'User  who last updated the record'
-) ;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `packages`
 --
 
@@ -67,7 +41,7 @@ CREATE TABLE `packages` (
 
 CREATE TABLE `users` (
   `id` varchar(36) NOT NULL COMMENT 'Unique identifier for the user (UUID)',
-  `idCard` int(20) NOT NULL COMMENT 'Identification card number',
+  `idCard` BIGINT(255) NOT NULL COMMENT 'Identification card number',
   `firstName` varchar(30) NOT NULL COMMENT 'Users first name',
   `lastName` varchar(30) NOT NULL COMMENT 'Users last name',
   `gender` int(2) NOT NULL COMMENT 'Users gender (1: Male, 2: Female, etc.)',
@@ -77,12 +51,16 @@ CREATE TABLE `users` (
   `address` varchar(100) NOT NULL COMMENT 'Street address',
   `postalCode` int(10) DEFAULT NULL COMMENT 'Postal code for the address',
   `email` varchar(100) NOT NULL COMMENT 'Users email address',
-  `phone` int(55) NOT NULL COMMENT 'Users phone number',
+  `phone` BIGINT(255) NOT NULL COMMENT 'Users phone number',
   `dateBirth` date DEFAULT NULL COMMENT 'Users date of birth',
+  `hireName` varchar(100) DEFAULT NULL COMMENT 'Name of the person who hired the driver',
+  `licenceNumber` varchar(50) DEFAULT NULL COMMENT 'Drivers license number',
+  `licenceExpirationAt` date DEFAULT NULL COMMENT 'Expiration date of the drivers license',
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Timestamp when the user record was created',
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Timestamp when the user record was last updated',
   `role` int(11) NOT NULL COMMENT 'User  role (e.g., 1: Admin, 2: User)',
-  `password` varchar(255) NOT NULL COMMENT 'Users password (hashed)'
+  `password` varchar(255) NOT NULL COMMENT 'Users password (hashed)',
+  `notes` text DEFAULT NULL COMMENT 'Additional notes about the driver'
 ) ;
 
 -- --------------------------------------------------------
@@ -113,17 +91,6 @@ CREATE TABLE `vehicles` (
 ) ;
 
 --
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `drivers`
---
-ALTER TABLE `drivers`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`);
-
---
 -- Indices de la tabla `packages`
 --
 ALTER TABLE `packages`
@@ -146,20 +113,3 @@ ALTER TABLE `vehicles`
   ADD UNIQUE KEY `vin` (`vin`),
   ADD UNIQUE KEY `driverId` (`driverId`);
 
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `packages`
---
-ALTER TABLE `packages`
-  ADD CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`senderIdCard`) REFERENCES `users` (`idCard`),
-  ADD CONSTRAINT `packages_ibfk_2` FOREIGN KEY (`vehicleId`) REFERENCES `vehicles` (`id`);
-
---
--- Filtros para la tabla `vehicles`
---
-ALTER TABLE `vehicles`
-  ADD CONSTRAINT `vehicles_ibfk_1` FOREIGN KEY (`driverId`) REFERENCES `drivers` (`id`);
-COMMIT;
