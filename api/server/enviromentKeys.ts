@@ -6,4 +6,5 @@ export const enviromentKeys: any = {
     DATABASEPASSWORD:"Database Password",
     DATABASENAME:"Database Name",
     JWTKEYSECRET: "JWT Secret",
+    CAGEKEY: "OpenCage"
 }

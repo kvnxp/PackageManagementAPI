@@ -8,6 +8,7 @@ import { responseStruct } from "../struct/responseStruct";
 import { AuthInterface } from "../interfaces/authInterface";
 import { MessageList } from "../tools/messageList";
 import { JWTManager } from "../jwt/jwtManager";
+import { validateAddress } from "../tools/addressValidator";
 
 export class AuthController {
 
@@ -69,6 +70,17 @@ export class AuthController {
 
         try {
             const userData: User = new User(body);
+
+            if (userData.country != '' && userData.city != '' && userData.address != '') {
+                const fullAddress = `${userData.address}, ${userData.city}, ${userData.country}`;
+                const result:any[] = await validateAddress(fullAddress);
+                if(result.length == 0){
+                    next(new responseStruct("error", MessageList.USER_INVALID_ADDRESS, 404));
+                    return;
+                }
+                result;
+            }
+
             userData.password = bcrypt.hashSync(userData.password!, 10);
             userData.role = Roles.user;
             const values = User.toInsert(userData);
