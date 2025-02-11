@@ -1,7 +1,7 @@
 import * as jwt from "jose"
 import { enviromentKeys } from "../server/enviromentKeys";
 import { responseStruct } from "../struct/responseStruct";
-import { MessageList } from "../tools/messageList";
+import { MessageList } from "../misc/messageList";
 
 export class JWTManager {
     public static async createToken(data: any) {

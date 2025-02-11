@@ -12,7 +12,7 @@ export async function validateAddress(address: string) {
     if (!response.data || !response.data.results) {
       return [];
     }
-    return response.data.results;
+    return response.data.results[0];
   } catch (error) {
     console.error("Error validating address:", error);
 

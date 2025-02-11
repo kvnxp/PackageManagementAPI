@@ -1,0 +1,932 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Delivery Management API",
+    "version": "1.0.0",
+    "description": "API for managing users, drivers, vehicles, and packages."
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "user"
+    },
+    {
+      "name": "drivers"
+    },
+    {
+      "name": "vehicles"
+    },
+    {
+      "name": "packages"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Register a new user",
+        "description": "This endpoint allows a new user to register by providing their details.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCard": {
+                    "type": "integer",
+                    "example": 8273473
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password"
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "example": "user"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "lastname"
+                  },
+                  "gender": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "calle 45 cra 17"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "Barranquilla"
+                  },
+                  "phone": {
+                    "type": "integer",
+                    "example": 3003003030
+                  },
+                  "country": {
+                    "type": "string",
+                    "example": "colombia"
+                  },
+                  "state": {
+                    "type": "string",
+                    "example": "state"
+                  },
+                  "postalCode": {
+                    "type": "integer",
+                    "example": 1234578
+                  },
+                  "dateBirth": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-04-28"
+                  }
+                },
+                "required": [
+                  "idCard",
+                  "email",
+                  "password",
+                  "firstName",
+                  "lastName",
+                  "gender",
+                  "address",
+                  "city",
+                  "phone",
+                  "country",
+                  "state",
+                  "postalCode",
+                  "dateBirth"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User created"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid address"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User exists"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "User login",
+        "description": "This endpoint allows a user to log in with their email and password.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "admin@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "adminPass"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "The password is incorrect"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/driver/createDriver": {
+      "post": {
+        "tags": [
+          "drivers"
+        ],
+        "summary": "Create a new driver",
+        "description": "Only admin can create a driver. Requires auth token in headers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCard": {
+                    "type": "integer",
+                    "example": 861444325384
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "example": "driver"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "lastname"
+                  },
+                  "gender": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "country": {
+                    "type": "string",
+                    "example": "colombia"
+                  },
+                  "state": {
+                    "type": "string",
+                    "example": "atl"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "baq"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "cra 20 no 45"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "driver@email.com"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "3003003030"
+                  },
+                  "dateBirth": {
+                    "type": "string",
+                    "format": "date",
+                    "example": ""
+                  },
+                  "hireName": {
+                    "type": "string",
+                    "example": ""
+                  },
+                  "licenceNumber": {
+                    "type": "string",
+                    "example": "872345923487"
+                  },
+                  "licenceExpirationAt": {
+                    "type": "string",
+                    "example": "2026-12-01"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "example": ""
+                  }
+                },
+                "required": [
+                  "idCard",
+                  "firstName",
+                  "lastName",
+                  "gender",
+                  "country",
+                  "state",
+                  "city",
+                  "address",
+                  "email",
+                  "phone",
+                  "licenceNumber",
+                  "licenceExpirationAt"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Driver created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Driver created"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Only admin can create a driver"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/driver/getDriverList": {
+      "get": {
+        "tags": [
+          "drivers"
+        ],
+        "summary": "Get list of drivers",
+        "description": "Only admin can get the driver list. Requires auth token in headers.",
+        "parameters": [
+          {
+            "name": "idCard",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Driver list retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "idCard": {
+                        "type": "integer"
+                      },
+                      "firstName": {
+                        "type": "string"
+                      },
+                      "lastName": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  " properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Only admin can get the driver list"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Driver not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Driver not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicle/create": {
+      "post": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "Create a new vehicle",
+        "description": "Only admin can create a vehicle. Requires auth token in headers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vin": {
+                    "type": "string",
+                    "example": "1HGCM82633A123456"
+                  },
+                  "make": {
+                    "type": "string",
+                    "example": "Toyota"
+                  },
+                  "model": {
+                    "type": "string",
+                    "example": "Corolla"
+                  },
+                  "licencePlate": {
+                    "type": "string",
+                    "example": "ABC-123"
+                  },
+                  "cargoCapacityVolume": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 15.5
+                  },
+                  "cargoCapacityWeight": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 1200.75
+                  },
+                  "dimentionInterior": {
+                    "type": "string",
+                    "example": "2.5m x 1.8m x 1.5m"
+                  },
+                  "owner": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "dateAcquired": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-01-01T00:00:00Z"
+                  },
+                  "vehicleStatus": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "driverId": {
+                    "type": "string",
+                    "example": "456e7890-e12b-34d5-c678-910111213141"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "example": "Vehicle is in excellent condition."
+                  }
+                },
+                "required": [
+                  "vin",
+                  "make",
+                  "model",
+                  "licencePlate",
+                  "cargoCapacityVolume",
+                  "cargoCapacityWeight",
+                  "dimentionInterior",
+                  "owner",
+                  "dateAcquired",
+                  "vehicleStatus",
+                  "driverId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vehicle created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Vehicle created"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Vehicle already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Vehicle already exists"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicle/getVehicleList": {
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "Get list of vehicles",
+        "description": "Only admin or driver can get the vehicle list. Requires auth token in headers.",
+        "parameters": [
+          {
+            "name": "licencePlate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vehicle list retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "vin": {
+                        "type": "string"
+                      },
+                      "make": {
+                        "type": "string"
+                      },
+                      "model": {
+                        "type": "string"
+                      },
+                      "licencePlate": {
+                        "type : ": "string"
+                      },
+                      "owner": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Only admin or driver can get the vehicle list"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vehicle not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Vehicle not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/package/create": {
+      "post": {
+        "tags": [
+          "packages"
+        ],
+        "summary": "Create a new package",
+        "description": "Only admin and user can create a package. Requires auth token in headers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "senderName": {
+                    "type": "string",
+                    "example": "Alice Johnson"
+                  },
+                  "senderIdCard": {
+                    "type": "integer",
+                    "example": 726383
+                  },
+                  "senderAddress": {
+                    "type": "string",
+                    "example": "100 Sender Lane, Apt 2B"
+                  },
+                  "senderCountry": {
+                    "type": "string",
+                    "example": "USA"
+                  },
+                  "senderCity": {
+                    "type": "string",
+                    "example": "Los Angeles"
+                  },
+                  "senderState": {
+                    "type": "string",
+                    "example": "CA"
+                  },
+                  "senderzipCode": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "senderPhone": {
+                    "type": "integer",
+                    "example": 3003003030
+                  },
+                  "reciverName": {
+                    "type": "string",
+                    "example": "Bob Williams"
+                  },
+                  "reciverIdCard": {
+                    "type": "integer",
+                    "example": 123450987654
+                  },
+                  "reciverAddress": {
+                    "type": "string",
+                    "example": "cra 20 no 72"
+                  },
+                  "reciverCountry": {
+                    "type": "string",
+                    "example": "Colombia"
+                  },
+                  "reciverState": {
+                    "type": "string",
+                    "example": "ON"
+                  },
+                  "reciverCity": {
+                    "type": "string",
+                    "example": "Toronto"
+                  },
+                  "reciverzipCode": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "reciverPhone": {
+                    "type": "integer",
+                    "example": 3003003130
+                  },
+                  "vehicleId": {
+                    "type": "string",
+                    "example": "3dfb9e3d-ffb7-4195-b2eb-1d3f0e3fbd32"
+                  },
+                  "weight": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 2.75
+                  },
+                  "dimentions": {
+                    "type": "string",
+                    "example": "15x20x5"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Set of books"
+                  },
+                  "packageType": {
+                    "type": "string",
+                    "example": "Books"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "example": "Deliver to the front desk"
+                  }
+                },
+                "required": [
+                  "senderName",
+                  "senderIdCard",
+                  "senderAddress",
+                  "senderCountry",
+                  "senderCity",
+                  "senderState",
+                  "senderzipCode",
+                  "senderPhone",
+                  "reciverName",
+                  "reciverIdCard",
+                  "reciverAddress",
+                  "reciverCountry",
+                  "reciverState",
+                  "reciverCity",
+                  "reciverzipCode",
+                  "reciverPhone",
+                  "vehicleId",
+                  "weight",
+                  "dimentions",
+                  "description",
+                  "packageType"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Package created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Package created"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Only admin and user can create a package"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/package/list": {
+      "get": {
+        "tags": [
+          "packages"
+        ],
+        "summary": "Get list of packages",
+        "description": "Anyone can consult the package list.",
+        "parameters": [
+          {
+            "name": "senderIdCard",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "reciverIdCard",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "vehicleId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "packageState",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Package list retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "senderName": {
+                        "type": "string"
+                      },
+                      "reciverName": {
+                        "type": "string"
+                      },
+                      "weight": {
+                        "type": "number"
+                      },
+                      "packageType": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No packages found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "No packages found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -6,6 +6,14 @@ import { responseStruct } from "../struct/responseStruct";
 import userRouter from "../routes/userRoutes";
 import { SecurityManager } from "../security/securityManager";
 import cors from "cors"
+import driverRouter from "../routes/driverRoutes";
+import vehicleRouter from "../routes/vehiclesRoutes";
+import packageRouter from "../routes/packagesRoutes";
+import * as swaggerUi from "swagger-ui-express";
+import * as fs from "fs";
+import path from "path";
+
+
 export function expressInit() {
 
     const port = process.env.PORT ?? 3000;
@@ -17,18 +25,25 @@ export function expressInit() {
 
     app.use(cors());
 
+    //configure swagger 
+    //project path 
+    const swaggerpath = path.resolve(__dirname, "../..") + "/swaggerDoc.json";
+
+    const swaggerDocument = JSON.parse(fs.readFileSync(swaggerpath, "utf-8"));
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
     //Validate user token
     app.use(SecurityManager.validateUser);
 
     //load routes
-    const routes: any = [welcomeRouter, authRouter, userRouter];
+    const routes: any = [welcomeRouter, authRouter, userRouter, driverRouter, vehicleRouter, packageRouter];
     app.use("/", routes);
 
     // Error handler
     app.use((err: responseStruct, req: Request, res: Response, next: NextFunction) => {
         console.log(err);
 
-        const ecode = err.ecode ?? 500;
+        const ecode = err.codeno ?? 500;
         let errorRet;
 
         if (err.status == "ok") {

@@ -1,11 +1,11 @@
-import { MessageList } from "../tools/messageList";
+import { MessageList } from "../misc/messageList";
 
 /**
  * Class representing a response structure.
  */
 export class responseStruct extends Error {
     status: "ok" | "error";
-    ecode?: number;
+    codeno?: number;
     data?: any;
     token?: string;
 
@@ -14,17 +14,17 @@ export class responseStruct extends Error {
      * 
      * @param status - The status of the response, either "ok" or "error".
      * @param message - The message associated with the response, which can be a `MessageList` or a string.
-     * @param ecode - (Optional) The error code associated with the response.
+     * @param codeno - (Optional) The error code associated with the response.
      * @param data - (Optional) Additional data associated with the response.
      */
-    constructor(status: "ok" | "error", message: MessageList | string, ecode?: number, data?: any) {
+    constructor(status: "ok" | "error", message: MessageList | string, codeno?: number, data?: any) {
         super();
         this.status = status;
         this.message = message.toString();
-        this.ecode = ecode;
+        this.codeno = codeno;
         this.data = data;
     }
 
 }
 
-export const errorStruct = responseStruct
+export const ErrorMessage = responseStruct

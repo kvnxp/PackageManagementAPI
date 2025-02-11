@@ -6,9 +6,10 @@ import * as  bcrypt from 'bcrypt';
 import { Roles } from "../enums/roleEnum";
 import { responseStruct } from "../struct/responseStruct";
 import { AuthInterface } from "../interfaces/authInterface";
-import { MessageList } from "../tools/messageList";
+import { MessageList } from "../misc/messageList";
 import { JWTManager } from "../jwt/jwtManager";
-import { validateAddress } from "../tools/addressValidator";
+import { validateAddress } from "../misc/addressValidator";
+import { converToSQLInsert } from "../misc/createSQLInsert";
 
 export class AuthController {
 
@@ -19,6 +20,7 @@ export class AuthController {
         //Search if user exists
         try {
             const result: any = await SQL.promise().query(UserQueryList.SELECT_USER_BY_EMAIL, [body.email.trim()]);
+            SQL.release();
             if (result[0].length == 0) {
                 // res.send(new responseStruct("error", "User not found",404));
                 next(new responseStruct("error", MessageList.USER_NOT_FOUND, 404));
@@ -39,12 +41,12 @@ export class AuthController {
         }
 
         delete userData.password;
-        //Create token
 
+        //Create token
         try {
             const token = await JWTManager.createToken(userData);
             const response = new responseStruct("ok", MessageList.AUTH_SUCCESS, 200, userData);
-            response.token = token; 
+            response.token = token;
             res.send(response);
 
         } catch (error) {
@@ -73,21 +75,26 @@ export class AuthController {
 
             if (userData.country != '' && userData.city != '' && userData.address != '') {
                 const fullAddress = `${userData.address}, ${userData.city}, ${userData.country}`;
-                const result:any[] = await validateAddress(fullAddress);
-                if(result.length == 0){
+                const result: any[] = await validateAddress(fullAddress);
+                if (result.length == 0) {
                     next(new responseStruct("error", MessageList.USER_INVALID_ADDRESS, 404));
                     return;
                 }
                 result;
             }
 
+            //Hash password
             userData.password = bcrypt.hashSync(userData.password!, 10);
+
+            //Set role
             userData.role = Roles.user;
-            const values = User.toInsert(userData);
 
-            const query = `INSERT INTO users (${values.keyes}) VALUES (${values.comodin})`;
+            //Insert user
+            const { query, values } = converToSQLInsert(userData, "users");
 
-            const result = await SQL.promise().query(query, values.values);
+            //Insert user to database
+            const result = await SQL.promise().query(query, values);
+            SQL.release();
 
             res.send(new responseStruct("ok", MessageList.USER_CREATED, 201));
 
