@@ -18,7 +18,17 @@ Use **NodeJS** >= 20.0
 __Database__: PostgreSQL, MySQL 
 > __Authentication__: JWT 
 
-
+*.env req with variables*
+```
+SENTRYDSN="Sentry DSN"
+DATABASEURL=" Database Host"
+DATABASEUSER="Database USER"
+DATABASEPASSWORD="Database Password"
+DATABASENAME="Database Name"
+JWTKEYSECRET="JWT secret "
+EXPRESSPORT="Express Port"
+CAGEKEY="opencagedata API KEY for validate address"
+```
 
 ```
 1) npm Install
@@ -29,3 +39,4 @@ __Database__: PostgreSQL, MySQL
 
 ```
 npm start 
+
