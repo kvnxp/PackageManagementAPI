@@ -11,6 +11,9 @@ export class MessageList {
 
     public static readonly VEHICLE_CREATED = "Vehicle created";
     public static readonly VEHICLE_UPDATED = "Vehicle updated";
+    public static readonly VEHICLE_NOT_FOUND = "Vehicle not found";
+    public static readonly VEHICLE_CREATE_FAILED = "Vehicle creation failed";
+    public static readonly VEHICLE_EXISTS = "Vehicle already exists";
 
     public static readonly AUTH_INVALID_EMAIL = "Invalid email format";
     public static readonly AUTH_INVALID_DATE = "Invalid date format";
@@ -21,7 +24,6 @@ export class MessageList {
     public static readonly AUTH_INVALID_PHONE = "Invalid phone number";
     public static readonly UNAUTHORIZED = "Unauthorized";
     public static readonly FORBIDDEN = "Forbidden";
-
 
 
     public static readonly INTERNAL_ERROR = "Internal error";

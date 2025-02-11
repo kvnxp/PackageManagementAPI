@@ -4,33 +4,33 @@
 --
 
 CREATE TABLE `packages` (
-  `id` int(11) NOT NULL COMMENT 'Unique identifier for the package',
+  `id` varchar(36) NOT NULL COMMENT 'Unique identifier for the package',
   `senderName` varchar(100) DEFAULT NULL COMMENT 'Name of the sender',
-  `senderIdCard` int(11) DEFAULT NULL COMMENT 'Identification card number of the sender',
+  `senderIdCard` BIGINT(255) DEFAULT NULL COMMENT 'Identification card number of the sender',
   `senderAddress` varchar(255) DEFAULT NULL COMMENT 'Address of the sender',
   `senderCountry` varchar(100) DEFAULT NULL COMMENT 'Country of the sender',
   `senderCity` varchar(100) DEFAULT NULL COMMENT 'City of the sender',
   `senderState` varchar(100) DEFAULT NULL COMMENT 'State of the sender',
   `reciverName` varchar(100) DEFAULT NULL COMMENT 'Name of the receiver',
-  `reciverIdCard` int(11) DEFAULT NULL COMMENT 'Identification card number of the receiver',
+  `reciverIdCard` BIGINT(255) DEFAULT NULL COMMENT 'Identification card number of the receiver',
   `reciverAddress` varchar(255) DEFAULT NULL COMMENT 'Address of the receiver',
   `reciverCountry` varchar(100) DEFAULT NULL COMMENT 'Country of the receiver',
   `reciverState` varchar(100) DEFAULT NULL COMMENT 'State of the receiver',
   `reciverCity` varchar(100) DEFAULT NULL COMMENT 'City of the receiver',
-  `vehicleId` int(11) DEFAULT NULL COMMENT 'Identifier for the vehicle associated with the package',
+  `vehicleId` BIGINT(255) DEFAULT NULL COMMENT 'Identifier for the vehicle associated with the package',
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Timestamp when the package record was created',
   `createdBy` varchar(100) DEFAULT NULL COMMENT 'User  who created the package record',
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Timestamp when the package record was last updated',
   `updatedBy` varchar(100) DEFAULT NULL COMMENT 'User  who last updated the package record',
   `recivedAt` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Timestamp when the package was received',
   `deliverDateEtaAt` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Estimated time of arrival for delivery',
-  `packageState` varchar(50) DEFAULT NULL COMMENT 'Current state of the package (e.g., in transit, delivered)',
+  `packageState` int(3) DEFAULT NULL COMMENT 'Current state of the package (e.g., in transit, delivered)',
   `weight` decimal(10,2) DEFAULT NULL COMMENT 'Weight of the package',
   `dimentions` varchar(100) DEFAULT NULL COMMENT 'Dimensions of the package',
   `description` text DEFAULT NULL COMMENT 'Description of the package contents',
-  `packageType` varchar(50) DEFAULT NULL COMMENT 'Type of the package (e.g., fragile, perishable)',
+  `packageType` varchar(255) DEFAULT NULL COMMENT 'Type of the package (e.g., fragile, perishable)',
   `notes` text DEFAULT NULL COMMENT 'Additional notes about the package',
-  `tracking` tinyint(1) DEFAULT NULL COMMENT 'Indicates whether the package is being tracked (true/false)'
+  `gpsLocation` point DEFAULT NULL COMMENT 'GPS location of the package'
 ) ;
 
 -- --------------------------------------------------------
@@ -70,7 +70,7 @@ CREATE TABLE `users` (
 --
 
 CREATE TABLE `vehicles` (
-  `id` int(11) NOT NULL COMMENT 'Unique identifier for the vehicle',
+  `id` varchar(36) NOT NULL COMMENT 'Unique identifier for the vehicle',
   `vin` varchar(17) DEFAULT NULL COMMENT 'Vehicle Identification Number (VIN)',
   `make` varchar(50) DEFAULT NULL COMMENT 'Manufacturer of the vehicle',
   `model` varchar(50) DEFAULT NULL COMMENT 'Model of the vehicle',
@@ -79,15 +79,15 @@ CREATE TABLE `vehicles` (
   `cargoCapacityWeight` decimal(10,2) DEFAULT NULL COMMENT 'Cargo capacity in weight (e.g., kilograms)',
   `dimentionInterior` varchar(100) DEFAULT NULL COMMENT 'Interior dimensions of the vehicle',
   `Owner` varchar(100) DEFAULT NULL COMMENT 'Owner of the vehicle',
-  `dateAdquired` date DEFAULT NULL COMMENT 'Date when the vehicle was acquired',
+  `dateAcquired` date DEFAULT NULL COMMENT 'Date when the vehicle was acquired',
   `vehicleStatus` varchar(50) DEFAULT NULL COMMENT 'Current status of the vehicle (e.g., active, inactive)',
   `driverId` varchar(36) DEFAULT NULL COMMENT 'Identifier for the driver associated with the vehicle',
-  `tracking` tinyint(1) DEFAULT NULL COMMENT 'Whether the vehicle is being tracked (true/false)',
   `dateCreatedAt` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Timestamp when the record was created',
-  `dateUpdateAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Timestamp when the record was last updated',
+  `dateUpdatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Timestamp when the record was last updated',
   `cratedBy` varchar(100) DEFAULT NULL COMMENT 'User  who created the record',
   `updatedBy` varchar(100) DEFAULT NULL COMMENT 'User  who last updated the record',
-  `notes` text DEFAULT NULL COMMENT 'Additional notes about the vehicle'
+  `notes` text DEFAULT NULL COMMENT 'Additional notes about the vehicle',
+  `gpsLocation` point DEFAULT NULL COMMENT 'GPS location of the package'
 ) ;
 
 --

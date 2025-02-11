@@ -5,8 +5,8 @@ export function converToSQLInsert(data: any, tableName: string) {
     for (const key in data) {
         const keyName = key;
         if (data[keyName] !== undefined) {
-            keyes += key + ',',
-                values.push(data[keyName]);
+            keyes += key + ',';
+            values.push(data[keyName]);
             comodin += '?,'
         }
     }
