@@ -37,4 +37,23 @@ export class Tools {
         }
 
     }
+
+    public static async generateRandomNumber() {
+        const arraydata = new Uint32Array(1);
+        await crypto.getRandomValues(arraydata);
+        return arraydata[0]
+    }
+
+    public static queryConcat(query: string, param: string[]) {
+        var concatentatedQuery = query;
+        param.forEach((element, index) => {
+            if (index == 0) {
+                concatentatedQuery = concatentatedQuery.concat(` WHERE ${element}`);
+
+            } else {
+                concatentatedQuery =  concatentatedQuery.concat(` AND ${element}`);
+            }
+        })
+        return concatentatedQuery;
+    }
 }

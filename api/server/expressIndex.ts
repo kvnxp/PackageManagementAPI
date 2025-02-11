@@ -8,6 +8,8 @@ import { SecurityManager } from "../security/securityManager";
 import cors from "cors"
 import driverRouter from "../routes/driverRoutes";
 import vehicleRouter from "../routes/vehiclesRoutes";
+import packageRouter from "../routes/packagesRoutes";
+
 export function expressInit() {
 
     const port = process.env.PORT ?? 3000;
@@ -23,7 +25,7 @@ export function expressInit() {
     app.use(SecurityManager.validateUser);
 
     //load routes
-    const routes: any = [welcomeRouter, authRouter, userRouter, driverRouter,vehicleRouter];
+    const routes: any = [welcomeRouter, authRouter, userRouter, driverRouter, vehicleRouter, packageRouter];
     app.use("/", routes);
 
     // Error handler

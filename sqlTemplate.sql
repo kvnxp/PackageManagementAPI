@@ -1,37 +1,53 @@
 
 --
+-- Base de datos: `packageManager`
+--
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `packages`
 --
 
 CREATE TABLE `packages` (
-  `id` varchar(36) NOT NULL COMMENT 'Unique identifier for the package',
+  `id` varchar(100) NOT NULL COMMENT 'Unique identifier for the package',
   `senderName` varchar(100) DEFAULT NULL COMMENT 'Name of the sender',
-  `senderIdCard` BIGINT(255) DEFAULT NULL COMMENT 'Identification card number of the sender',
+  `senderIdCard` bigint(255) DEFAULT NULL COMMENT 'Identification card number of the sender',
   `senderAddress` varchar(255) DEFAULT NULL COMMENT 'Address of the sender',
   `senderCountry` varchar(100) DEFAULT NULL COMMENT 'Country of the sender',
   `senderCity` varchar(100) DEFAULT NULL COMMENT 'City of the sender',
   `senderState` varchar(100) DEFAULT NULL COMMENT 'State of the sender',
+  `senderPostalCode` int(11) DEFAULT NULL,
+  `senderPhone` bigint(20) NOT NULL,
   `reciverName` varchar(100) DEFAULT NULL COMMENT 'Name of the receiver',
-  `reciverIdCard` BIGINT(255) DEFAULT NULL COMMENT 'Identification card number of the receiver',
+  `reciverIdCard` bigint(255) DEFAULT NULL COMMENT 'Identification card number of the receiver',
   `reciverAddress` varchar(255) DEFAULT NULL COMMENT 'Address of the receiver',
   `reciverCountry` varchar(100) DEFAULT NULL COMMENT 'Country of the receiver',
   `reciverState` varchar(100) DEFAULT NULL COMMENT 'State of the receiver',
   `reciverCity` varchar(100) DEFAULT NULL COMMENT 'City of the receiver',
-  `vehicleId` BIGINT(255) DEFAULT NULL COMMENT 'Identifier for the vehicle associated with the package',
+  `reciverPostalCode` int(11) DEFAULT NULL,
+  `reciverPhone` bigint(20) NOT NULL,
+  `vehicleId` varchar(36) NOT NULL COMMENT 'Identifier for the vehicle associated with the package',
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Timestamp when the package record was created',
   `createdBy` varchar(100) DEFAULT NULL COMMENT 'User  who created the package record',
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Timestamp when the package record was last updated',
   `updatedBy` varchar(100) DEFAULT NULL COMMENT 'User  who last updated the package record',
   `recivedAt` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Timestamp when the package was received',
+  `recivedBy` varchar(100) NOT NULL COMMENT 'Name of the person who received the package',
+  `recivedByIdCard` bigint(20) NOT NULL COMMENT 'Identification card number of the person who received the package',
   `deliverDateEtaAt` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Estimated time of arrival for delivery',
-  `packageState` int(3) DEFAULT NULL COMMENT 'Current state of the package (e.g., in transit, delivered)',
-  `weight` decimal(10,2) DEFAULT NULL COMMENT 'Weight of the package',
+  `packageState` varchar(10) DEFAULT NULL COMMENT 'Current state of the package (e.g., in transit, delivered)',
+  `weight` float DEFAULT NULL COMMENT 'Weight of the package',
   `dimentions` varchar(100) DEFAULT NULL COMMENT 'Dimensions of the package',
   `description` text DEFAULT NULL COMMENT 'Description of the package contents',
   `packageType` varchar(255) DEFAULT NULL COMMENT 'Type of the package (e.g., fragile, perishable)',
   `notes` text DEFAULT NULL COMMENT 'Additional notes about the package',
   `gpsLocation` point DEFAULT NULL COMMENT 'GPS location of the package'
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `packages`
+--
 
 -- --------------------------------------------------------
 
@@ -41,7 +57,7 @@ CREATE TABLE `packages` (
 
 CREATE TABLE `users` (
   `id` varchar(36) NOT NULL COMMENT 'Unique identifier for the user (UUID)',
-  `idCard` BIGINT(255) NOT NULL COMMENT 'Identification card number',
+  `idCard` bigint(255) NOT NULL COMMENT 'Identification card number',
   `firstName` varchar(30) NOT NULL COMMENT 'Users first name',
   `lastName` varchar(30) NOT NULL COMMENT 'Users last name',
   `gender` int(2) NOT NULL COMMENT 'Users gender (1: Male, 2: Female, etc.)',
@@ -51,7 +67,7 @@ CREATE TABLE `users` (
   `address` varchar(100) NOT NULL COMMENT 'Street address',
   `postalCode` int(10) DEFAULT NULL COMMENT 'Postal code for the address',
   `email` varchar(100) NOT NULL COMMENT 'Users email address',
-  `phone` BIGINT(255) NOT NULL COMMENT 'Users phone number',
+  `phone` bigint(255) NOT NULL COMMENT 'Users phone number',
   `dateBirth` date DEFAULT NULL COMMENT 'Users date of birth',
   `hireName` varchar(100) DEFAULT NULL COMMENT 'Name of the person who hired the driver',
   `licenceNumber` varchar(50) DEFAULT NULL COMMENT 'Drivers license number',
@@ -61,7 +77,11 @@ CREATE TABLE `users` (
   `role` int(11) NOT NULL COMMENT 'User  role (e.g., 1: Admin, 2: User)',
   `password` varchar(255) NOT NULL COMMENT 'Users password (hashed)',
   `notes` text DEFAULT NULL COMMENT 'Additional notes about the driver'
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `users`
+--
 
 -- --------------------------------------------------------
 
@@ -88,28 +108,54 @@ CREATE TABLE `vehicles` (
   `updatedBy` varchar(100) DEFAULT NULL COMMENT 'User  who last updated the record',
   `notes` text DEFAULT NULL COMMENT 'Additional notes about the vehicle',
   `gpsLocation` point DEFAULT NULL COMMENT 'GPS location of the package'
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `vehicles`
+--
+
+--
+-- Índices para tablas volcadas
+--
 
 --
 -- Indices de la tabla `packages`
 --
 ALTER TABLE `packages`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `senderIdCard` (`senderIdCard`),
-  ADD UNIQUE KEY `vehicleId` (`vehicleId`);
+  ADD UNIQUE KEY `id` (`id`),
+  ADD UNIQUE KEY `gpsLocation` (`gpsLocation`(25)),
+  ADD KEY `senderIdCard` (`senderIdCard`),
+  ADD KEY `reciverIdCard` (`reciverIdCard`),
+  ADD KEY `vehicleId` (`vehicleId`);
+ALTER TABLE `packages` ADD FULLTEXT KEY `vehicleId_2` (`vehicleId`);
 
 --
 -- Indices de la tabla `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `idCard` (`idCard`);
+  ADD UNIQUE KEY `idCard` (`idCard`),
+  ADD KEY `licenceNumber` (`licenceNumber`);
 
 --
 -- Indices de la tabla `vehicles`
 --
 ALTER TABLE `vehicles`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `vin` (`vin`),
-  ADD UNIQUE KEY `driverId` (`driverId`);
+  ADD UNIQUE KEY `licencePlate_2` (`licencePlate`),
+  ADD UNIQUE KEY `gpsLocation` (`gpsLocation`(25)),
+  ADD KEY `licencePlate` (`licencePlate`),
+  ADD KEY `driverId` (`driverId`);
 
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `packages`
+--
+ALTER TABLE `packages`
+  ADD CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`senderIdCard`) REFERENCES `users` (`idCard`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `packages_ibfk_2` FOREIGN KEY (`vehicleId`) REFERENCES `vehicles` (`id`) ON UPDATE CASCADE;
+COMMIT;
