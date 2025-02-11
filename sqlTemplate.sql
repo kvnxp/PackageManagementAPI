@@ -82,6 +82,12 @@ CREATE TABLE `users` (
 --
 -- Volcado de datos para la tabla `users`
 --
+-- admin@email.com
+-- adminPass
+
+INSERT INTO `users` (`id`, `idCard`, `firstName`, `lastName`, `gender`, `country`, `state`, `city`, `address`, `postalCode`, `email`, `phone`, `dateBirth`, `hireName`, `licenceNumber`, `licenceExpirationAt`, `createdAt`, `updatedAt`, `role`, `password`, `notes`) VALUES
+('e26f2591-82f5-4f92-ab44-086d05c1cbf6', 8273473, 'admin', 'lastname', 0, 'colombia', 'state', 'Barranquilla', 'calle 45  con carrera 17 al frente de donde venden pollo ', 1234578, 'admin@email.com', 3003003030, '2024-04-27', NULL, NULL, NULL, '2025-02-10 17:30:34', '2025-02-10 17:36:17', 1, '$2b$10$lI/7NkEaeBb98pHFI9BQ8.0ImjgUf/2HWr7BsL7Qk8/pJ4r1e/AG6', ''),
+
 
 -- --------------------------------------------------------
 

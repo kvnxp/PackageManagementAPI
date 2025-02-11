@@ -16,7 +16,7 @@ export class SecurityManager {
             }
             req.body.token = undefined;
             next();
-            return;
+        return;
         }
 
         if (!tokenHeader) {

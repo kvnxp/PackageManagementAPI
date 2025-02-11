@@ -9,6 +9,10 @@ import cors from "cors"
 import driverRouter from "../routes/driverRoutes";
 import vehicleRouter from "../routes/vehiclesRoutes";
 import packageRouter from "../routes/packagesRoutes";
+import * as swaggerUi from "swagger-ui-express";
+import * as fs from "fs";
+import path from "path";
+
 
 export function expressInit() {
 
@@ -20,6 +24,13 @@ export function expressInit() {
     app.use(express.urlencoded({ extended: true }));
 
     app.use(cors());
+
+    //configure swagger 
+    //project path 
+    const swaggerpath = path.resolve(__dirname, "../..") + "/swaggerDoc.json";
+
+    const swaggerDocument = JSON.parse(fs.readFileSync(swaggerpath, "utf-8"));
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     //Validate user token
     app.use(SecurityManager.validateUser);
